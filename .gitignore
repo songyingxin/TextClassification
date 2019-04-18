@@ -1,5 +1,6 @@
 *.ckpt
 .vscode/
-__pychache__/
+__pycache__/
 Medium-NLP/.data/
-*/__pychache__
+*/__pycache__/
+.*

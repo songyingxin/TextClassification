@@ -2,3 +2,4 @@
 .vscode/
 __pychache__/
 Medium-NLP/.data/
+*/__pychache__

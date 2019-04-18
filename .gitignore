@@ -1,1 +1,3 @@
 *.ckpt
+.vscode
+__pychache__

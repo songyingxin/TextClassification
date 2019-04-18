@@ -1,3 +1,4 @@
 *.ckpt
 .vscode/
 __pychache__
+Medium-NLP/.data/

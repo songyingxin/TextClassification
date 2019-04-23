@@ -1,5 +1,7 @@
 import spacy
 import time
+import matplotlib.pyplot as plt
+import csv
 
 import torch
 
@@ -31,5 +33,24 @@ def epoch_time(start_time, end_time):
     elapsed_secs = int(elapsed_time - (elapsed_mins * 60))
     return elapsed_mins, elapsed_secs
 
+def sst_analysis(filename, type):
+    text_lengths = []
+    with open(filename, 'r', encoding='utf-8') as fh:
+        rowes = csv.reader(fh, delimiter='\t')
+        for row in rowes:
+            text = row[0]
+            text_lengths.append(len(word_tokenize(text)))
+    
+    x = range(len(text_lengths))
+    plt.plot(x, text_lengths)
+    plt.ylabel("tokens_num")
+    plt.title(type)
+    plt.legend()
+    plt.show()
 
+if __name__ == "__main__":
 
+    sst_analysis('data/SST2/train.tsv', 'train')
+    sst_analysis('data/SST2/dev.tsv', 'dev')
+    sst_analysis('data/SST2/test.tsv', 'test')
+    

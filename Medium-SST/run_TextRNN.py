@@ -10,8 +10,8 @@ from torchtext import data
 from torchtext import datasets
 from torchtext import vocab
 
-from TextCNN import args, TextCNN
-from utils import word_tokenize, get_device, epoch_time 
+from TextRNN import args, TextRNN
+from utils import word_tokenize, get_device, epoch_time
 from datasets import load_sst2
 
 
@@ -37,18 +37,11 @@ def train(model, iterator, optimizer, criterion):
     for batch in iterator:
 
         optimizer.zero_grad()
-
-        text, text_lengths = batch.text
-        predictions = model(text).squeeze(1)
-
+        predictions = model(batch.text).squeeze(1)
         loss = criterion(predictions, batch.label)
-
         acc = binary_accuracy(predictions, batch.label)
-
         loss.backward()
-
         optimizer.step()
-
         epoch_loss += loss.item()
         epoch_acc += acc.item()
 
@@ -65,16 +58,13 @@ def evaluate(model, iterator, criterion):
     with torch.no_grad():
 
         for batch in iterator:
-            text, text_lengths = batch.text
-            predictions = model(text).squeeze(1)
+            predictions = model(batch.text).squeeze(1)
             loss = criterion(predictions, batch.label)
             acc = binary_accuracy(predictions, batch.label)
             epoch_loss += loss.item()
             epoch_acc += acc.item()
 
     return epoch_loss / len(iterator), epoch_acc / len(iterator)
-
-
 
 
 def main(config):
@@ -85,10 +75,12 @@ def main(config):
     torch.backends.cudnn.deterministic = True  # cudnn 使用确定性算法，保证每次结果一样
 
     """ sst2 数据准备 """
-    text_field = data.Field(tokenize='spacy', lower=True, include_lengths=True, fix_length=config.sequence_length)
+    text_field = data.Field(tokenize='spacy', lower=True,
+                            include_lengths=True)
     label_field = data.LabelField(dtype=torch.float)
 
-    train_iterator, dev_iterator, test_iterator = load_sst2(config.data_path, text_field, label_field, config.batch_size, device, config.glove_word_file)
+    train_iterator, dev_iterator, test_iterator = load_sst2(
+        config.data_path, text_field, label_field, config.batch_size, device, config.glove_word_file)
 
     """ 词向量准备 """
     pretrained_embeddings = text_field.vocab.vectors
@@ -96,11 +88,8 @@ def main(config):
     unk_idx = text_field.vocab.stoi[text_field.unk_token]
 
     """ 模型准备 """
-    filter_sizes = [int(val) for val in config.filter_sizes.split()]
-    model = TextCNN.TextCNN(
-        len(text_field.vocab), config.glove_word_dim, config.filter_num, filter_sizes,
-        config.output_dim, config.dropout, pad_idx)
-    
+    model = TextRNN.TextRNN(len(text_field.vocab), config.glove_word_dim, config.output_dim, config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pad_idx)
+
     # 模型填充词向量
     model.embedding.weight.data.copy_(pretrained_embeddings)
     model.embedding.weight.data[unk_idx] = torch.rand(config.glove_word_dim)
@@ -142,16 +131,5 @@ def main(config):
     print(f'Test Loss: {test_loss:.3f} | Test Acc: {test_acc*100:.2f}%')
 
 
-
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     main(args.get_args())
-    

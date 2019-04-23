@@ -22,16 +22,16 @@ def get_args():
 
     # 优化参数
     parser.add_argument("--batch_size", default=64, type=int)
-    parser.add_argument("--epoch_num", default=4, type=int)
+    parser.add_argument("--epoch_num", default=5, type=int)
     parser.add_argument("--dropout", default=0.4, type=float)
 
     # 模型参数
     parser.add_argument("--output_dim", default=1, type=int)
 
-    # TextCNN 参数
-    parser.add_argument("--filter_num", default=200, type=int, help="filter 的数量")
-    parser.add_argument("--filter_sizes", default="1 2 3 4 5",
-                        type=str, help="filter 的 size")
+    # TextRNN 参数
+    parser.add_argument("--hidden_size", default=60, type=int, help="隐层单元数")
+    parser.add_argument('--num_layers', default=2, type=int, help='RNN层数')
+    parser.add_argument("--bidirectional", default=True, type=bool)
 
 
     # word Embedding

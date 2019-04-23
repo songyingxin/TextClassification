@@ -23,6 +23,7 @@ parser.add_argument('--learning_rate', default=0.001, type=float, help="学习�
 parser.add_argument('--hidden_size', default=500, type=int, help="隐层单元数")
 
 
+
 def train(model, optimizer, criterion, train_loader, input_size, epoch, device):
     model.train()
     for batch_idx, (images, labels) in enumerate(train_loader):
@@ -90,6 +91,8 @@ def main(config):
         model = models.LogisticRegressionMulti(config).to(device)
     elif config.model_name == "CNN":
         model = models.CNN().to(device)
+
+        
     criterion = nn.CrossEntropyLoss()  # 损失
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate) # 优化算法
 

@@ -26,14 +26,31 @@ python RUN_mnist.py --model_name=LR or CNN or RNN, or FNN
 | Mnist 手写数字识别 | 92%  | 98%  | 99%  |      |
 
 
+## Medium-IMDB
+
+该模块主要实现了两个基础模型： TextRNN, TextCNN, 此处实现比较粗糙，主要是为了摸清整个处理流程，在下面的Medium-SST部分，实现的模型都是可复用的，封装性良好的。
+
+```
+python run_imdb.py --model_name=RNN/CNN
+```
+
+| Dataset | RNN | CNN |
+| --- | --- | --- | 
+| IMDB| 89.29 |  86.47 |
 
 
-## Medium-CV
+## Medium-SST
 
-- 数据集：SST-2
+```
+python run_TextCNN.py
+```
 
-## Medium-NLP
+Dataset | TextCNN | TextRNN
+--- | --- | ---
+SST-2 | 86.18 | 
 
-- 数据集：MR
+
+- 待做： 采用 highway networks 将词向量与char-level向量结合起来， 感觉没必要了，词向量应该会被淘汰吧。
+
 
 

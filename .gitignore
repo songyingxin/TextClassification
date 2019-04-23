@@ -4,3 +4,4 @@ __pycache__/
 Medium-NLP/.data/
 */__pycache__/
 .*
+*.pt

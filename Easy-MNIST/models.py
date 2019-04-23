@@ -83,6 +83,4 @@ class CNN(nn.Module):
 
 
 
-        
-
 

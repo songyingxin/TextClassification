@@ -18,24 +18,24 @@
 ## Easy
 
 ```
-python RUN_mnist.py --model_name=LR or CNN or RNN, or FNN
+python RUN_mnist.py --model_name=LR or CNN or FNN
 ```
 
-| Dataset            | LR   | FNN  | CNN  | RNN  |
-| ------------------ | ---- | ---- | ---- | ---- |
-| Mnist 手写数字识别 | 92%  | 98%  | 99%  |      |
+| Dataset            | LR   | FNN  | CNN  |
+| ------------------ | ---- | ---- | ---- | 
+| Mnist 手写数字识别 | 92%  | 98%  | 99%  |      
 
 
 
 ## Medium-SST
 
 ```
-python run_TextCNN.py
+python run_TextCNN.py / run_TextRNN.py
 ```
 
-Dataset | TextCNN | TextRNN
---- | --- | ---
-SST-2 | 86.18 | 86.88
+Dataset | TextCNN | TextRNN | FastText
+--- | --- | --- | ---
+SST-2 | 86.18 | 86.88 |
 
 
 - 待做： 采用 highway networks 将词向量与char-level向量结合起来， 感觉没必要了，词向量应该会被淘汰吧。

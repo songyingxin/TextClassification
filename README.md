@@ -14,6 +14,7 @@
 - torchvision
 - torchtext
 - tqdm
+- pytorch_pretrained_bert： 可以不安装，直接把github上文件复制过来，这里为了方便，使用pip安装好的来跑
 
 ## Easy
 
@@ -29,16 +30,25 @@ python RUN_mnist.py --model_name=LR or CNN or FNN
 
 ## Medium-SST
 
+### SST-2 数据集
+
+数据集源自 [glue](https://gluebenchmark.com/tasks)， 考虑到 sst-2 并没有给出测试集，因此我将训练集的2000多个样本划分出来形成测试集， 划分代码见：split_train.py 。
+
+
+
+### BertBaseline
+
+本次实验是在单1080ti上运行，为了精简代码，易于理解，去掉了一些无关参数和逻辑， 毕竟原仓库中的代码1000多行，看起来不要太累。
+
+## Results
+
 ```
 python run_TextCNN.py / run_TextRNN.py
 ```
 
 Dataset | TextCNN | TextRNN | FastText
 --- | --- | --- | ---
-SST-2 | 86.18 | 86.88 |
+SST-2 | 92.97 | 92.38 |
 
 
-- 待做： 采用 highway networks 将词向量与char-level向量结合起来， 感觉没必要了，词向量应该会被淘汰吧。
-
-
-
+- 待做： 采用 highway networks 将词向量与char-level向量结合起来

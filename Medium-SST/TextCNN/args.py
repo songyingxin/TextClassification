@@ -2,7 +2,7 @@ import argparse
 
 
 def get_args():
-    data_dir = "data/SST2"
+    data_dir = "data/SST-2"
     cache_dir = data_dir +"/cache/"
     embedding_folder = "/home/songyingxin/datasets/WordEmbedding/"
 

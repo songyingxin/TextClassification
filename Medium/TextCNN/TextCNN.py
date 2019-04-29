@@ -2,7 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models import Conv, Linear
+from models.Conv import Conv
+from models.Linear import Linear
+
 
 class TextCNN(nn.Module):
     def __init__(self, vocab_size, embedding_dim, n_filters, filter_sizes, output_dim,
@@ -20,8 +22,8 @@ class TextCNN(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
 
-    def forward(self, text):
-
+    def forward(self, x):
+        text, _ = x
         # text: [sent len, batch size]
         text = text.permute(1, 0)  # 维度换位,
         # text: [batch size, sent len]

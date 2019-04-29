@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class Conv(nn.Module):
     def __init__(self, in_channels, out_channels, filter_sizes):
         super(Conv, self).__init__()
@@ -12,6 +13,8 @@ class Conv(nn.Module):
             for fs in filter_sizes
         ])
 
+        self.init_params()
+
     def init_params(self):
         for m in self.convs:
             nn.init.xavier_uniform(m.weight.data)
@@ -19,20 +22,3 @@ class Conv(nn.Module):
 
     def forward(self, x):
         return [F.relu(conv(x)) for conv in self.convs]
-
-
-class Linear(nn.Module):
-    def __init__(self, in_features, out_features):
-        super(Linear, self).__init__()
-
-        self.linear = nn.Linear(in_features=in_features,
-                                out_features=out_features)
-        self.init_params()
-
-    def init_params(self):
-        nn.init.kaiming_normal_(self.linear.weight)
-        nn.init.constant_(self.linear.bias, 0)
-
-    def forward(self, x):
-        x = self.linear(x)
-        return x

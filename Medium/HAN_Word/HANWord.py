@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 
+
 class TextRNN(nn.Module):
 
     def __init__(self, vocab_size, embedding_dim, output_dim, hidden_size, num_layers, bidirectional, dropout, pad_idx):
@@ -36,7 +37,7 @@ class TextRNN(nn.Module):
                 getattr(self.rnn, f'bias_hh_l{i}_reverse').chunk(4)[1].fill_(1)
 
     def forward(self, x):
-        text, text_lengths = x 
+        text, text_lengths = x
         # text: [sent len, batch size]
         embedded = self.dropout(self.embedding(text))
         # embedded: [sent len, batch size, emb dim]
@@ -52,5 +53,3 @@ class TextRNN(nn.Module):
             torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1))  # 连接最后一层的双向输出
 
         return self.fc(hidden.squeeze(0))
-
-

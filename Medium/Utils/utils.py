@@ -2,6 +2,7 @@ import spacy
 import time
 import matplotlib.pyplot as plt
 import csv
+from sklearn import metrics
 
 import torch
 
@@ -24,7 +25,7 @@ def get_device():
         print("device is cuda, # cuda is: ", n_gpu)
     else:
         print("device is cpu, not recommend")
-    return device
+    return device, n_gpu
 
 
 def epoch_time(start_time, end_time):
@@ -33,20 +34,17 @@ def epoch_time(start_time, end_time):
     elapsed_secs = int(elapsed_time - (elapsed_mins * 60))
     return elapsed_mins, elapsed_secs
 
-def sst_analysis(filename, type):
-    text_lengths = []
-    with open(filename, 'r', encoding='utf-8') as fh:
-        rowes = csv.reader(fh, delimiter='\t')
-        for row in rowes:
-            text = row[0]
-            text_lengths.append(len(word_tokenize(text)))
-    
-    x = range(len(text_lengths))
-    plt.plot(x, text_lengths)
-    plt.ylabel("tokens_num")
-    plt.title(type)
-    plt.legend()
-    plt.show()
+
+def classifiction_metric(preds, labels, label_list):
+    """ 分类任务的评价指标， 传入的数据需要是 numpy 类型的 """
+
+    acc = metrics.accuracy_score(preds, labels)
+
+    report = metrics.classification_report(labels, preds, digits=5)
+
+
+    return report, acc
+
 
 if __name__ == "__main__":
 

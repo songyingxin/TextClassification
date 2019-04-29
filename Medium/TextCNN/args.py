@@ -1,14 +1,13 @@
 import argparse
 
 
-def get_args():
-    data_dir = "data/SST-2"
-    cache_dir = data_dir +"/cache/"
-    embedding_folder = "/home/songyingxin/datasets/WordEmbedding/"
+def get_args(data_dir, cache_dir, embedding_folder):
+
 
     parser = argparse.ArgumentParser(description='SST')
 
-    parser.add_argument("--seed", default=1234, type=int, help="随机种子")
+    parser.add_argument("--model_name", default="TextCNN", type=str, help="这批参数所属的模型的名字")
+    parser.add_argument("--seed", default=3456, type=int, help="随机种子")
 
     # data_util
     parser.add_argument(
@@ -26,7 +25,7 @@ def get_args():
     parser.add_argument("--dropout", default=0.4, type=float)
 
     # 模型参数
-    parser.add_argument("--output_dim", default=1, type=int)
+    parser.add_argument("--output_dim", default=2, type=int)
 
     # TextCNN 参数
     parser.add_argument("--filter_num", default=200, type=int, help="filter 的数量")
@@ -47,20 +46,6 @@ def get_args():
         '--glove_word_dim',
         default=300, type=int,
         help='word embedding size (default: 300)')
-
-    # char embedding
-    parser.add_argument(
-        '--glove_char_file',
-        default=embedding_folder + "glove/glove.840B.300d-char.txt",
-        type=str, help='path of char embedding file')
-    parser.add_argument(
-        '--glove_char_size',
-        default=94, type=int,
-        help='Corpus size for char embedding')
-    parser.add_argument(
-        '--glove_char_dim',
-        default=300, type=int,
-        help='char embedding size (default: 64)')
     
 
     config = parser.parse_args()

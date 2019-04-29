@@ -1,7 +1,9 @@
 *.ckpt
 .vscode/
 __pycache__/
-Medium-NLP/.data/
+Medium/.data/
 */__pycache__/
 .*
 *.pt
+Medium/cache/
+Medium/output/

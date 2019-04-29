@@ -1,9 +1,8 @@
 *.ckpt
 .vscode/
 __pycache__/
-Medium/.data/
 */__pycache__/
 .*
 *.pt
-Medium/cache/
-Medium/output/
+*/cache/
+*/output/

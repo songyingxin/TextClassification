@@ -211,6 +211,6 @@ def main(config):
 if __name__ == "__main__":
 
     data_dir = "data/SST-2"
-    output_dir = "output"
-    cache_dir = "cache"
+    output_dir = ".output"
+    cache_dir = ".cache"
     main(args.get_args(data_dir, output_dir, cache_dir))

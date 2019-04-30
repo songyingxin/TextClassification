@@ -158,7 +158,7 @@ def main(config):
 if __name__ == "__main__":
 
     model_name = "TextRNN"   # TextRNN, TextCNN
-    data_dir = "data/SST-2"
+    data_dir = "/home/songyingxin/datasets/SST-2"
     cache_dir = data_dir + "/cache/"
     embedding_folder = "/home/songyingxin/datasets/WordEmbedding/"
 

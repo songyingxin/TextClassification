@@ -1,7 +1,5 @@
 import spacy
 import time
-import matplotlib.pyplot as plt
-import csv
 from sklearn import metrics
 
 import torch
@@ -17,6 +15,7 @@ def word_tokenize(sent):
     """ 分词 """
     doc = NLP(sent)
     return [token.text for token in doc]
+
 
 def get_device():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -40,8 +39,8 @@ def classifiction_metric(preds, labels, label_list):
 
     acc = metrics.accuracy_score(preds, labels)
 
-    report = metrics.classification_report(labels, preds, target_names=label_list, digits=5)
-
+    report = metrics.classification_report(
+        labels, preds, target_names=label_list, digits=5)
 
     return report, acc
 
@@ -51,4 +50,3 @@ if __name__ == "__main__":
     sst_analysis('data/SST2/train.tsv', 'train')
     sst_analysis('data/SST2/dev.tsv', 'dev')
     sst_analysis('data/SST2/test.tsv', 'test')
-    

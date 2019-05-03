@@ -7,13 +7,13 @@ from models.Linear import Linear
 
 
 class TextCNN(nn.Module):
-    def __init__(self, vocab_size, embedding_dim, n_filters, filter_sizes, output_dim,
-                 dropout, pad_idx):
+    def __init__(self,embedding_dim, n_filters, filter_sizes, output_dim,
+                 dropout, pretrained_embeddings):
 
         super().__init__()
 
-        self.embedding = nn.Embedding(
-            vocab_size, embedding_dim, padding_idx=pad_idx)
+        self.embedding = nn.Embedding.from_pretrained(
+            pretrained_embeddings, freeze=False)
 
         self.convs = Conv(embedding_dim,n_filters,filter_sizes)
 

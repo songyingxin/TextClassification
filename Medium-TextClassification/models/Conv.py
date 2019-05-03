@@ -17,8 +17,8 @@ class Conv(nn.Module):
 
     def init_params(self):
         for m in self.convs:
-            nn.init.xavier_uniform(m.weight.data)
-            nn.init.constant(m.bias.data, 0.1)
+            nn.init.xavier_uniform_(m.weight.data)
+            nn.init.constant_(m.bias.data, 0.1)
 
     def forward(self, x):
         return [F.relu(conv(x)) for conv in self.convs]

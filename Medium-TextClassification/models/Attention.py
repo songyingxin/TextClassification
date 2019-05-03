@@ -3,42 +3,35 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-
-class Attention(nn.Module):
+class WordAttention(nn.Module):
+    """
+    Compute 'Scaled Dot Product Attention'
+    """
 
     def __init__(self, dropout=0.0):
-
-        super(Attention, self).__init__()
-
+        """
+        :param dropout: attention dropout rate
+        """
+        super().__init__()
         self.dropout = dropout
-    
-    def scaled_dot(self, Q, K):
-        """ 点积操作: 
-        Returns: [batch, Q_len, K_len], 除以d_k 防止溢出
-        """
-        d_k = Q.size(-1)
-        return torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(d_k)
 
-    def forward(self, Q, K, V):
+    def forward(self, query, key, value):
         """
-        Args:
-            Q: [batch_size, Q_len, dim]
-            K: [batch_size, k_len, dim]
-            V: [batch_size, K_len, dim]
-        Returns:
-
+        :param query: [dim, 1]
+        :param key: [batch_size, key_len, dim]
+        :param value: [batch_size, key_len, dim]
         """
-        
-        # Score 的计算 
-        
-        scores =  self.scaled_dot(Q, K)
-        
-        # Attention value 的计算
-        atten_weights = F.softmax(scores, dim=-1)  # 注意力权重
-        atten_weights = F.dropout(atten_weights, p=self.dropout)
+        score = torch.tanh(torch.matmul(key, ))
 
-        atten_vals = torch.matmul(atten_weights, V)  # 最终的向量表示
-        return atten_vals, atten_weights
+
+        d_k = query.size(-1)
+        scores = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(d_k)
+        if mask is not None:
+            scores = scores.masked_fill_(mask == 0, -1e9)
+        p_attn = F.softmax(scores, dim=-1)
+        p_attn = F.dropout(p_attn, p=self.dropout)
+        return torch.matmul(p_attn, value), p_attn
+
 
 
 

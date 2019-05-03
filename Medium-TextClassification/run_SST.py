@@ -14,15 +14,15 @@ from torchtext import datasets
 from torchtext import vocab
 
 from Utils.utils import word_tokenize, get_device, epoch_time, classifiction_metric
-from Datasets.SST2Dataset import load_sst2
+from Utils.SST2_utils import load_sst2
 
 
 def train(model, iterator, optimizer, criterion, num_labels):
 
     epoch_loss = 0
     
-    all_preds = np.array([])
-    all_labels = np.array([])
+    all_preds = np.array([], dtype=int)
+    all_labels = np.array([], dtype=int)
     
     model.train()
     for batch in iterator:
@@ -44,7 +44,8 @@ def train(model, iterator, optimizer, criterion, num_labels):
 
         epoch_loss += loss.item()
         
-    report, acc = classifiction_metric(all_preds, all_labels, [0, 1])
+    report, acc = classifiction_metric(
+        all_preds, all_labels,  ["negative", "positive"])
     return epoch_loss/len(iterator), acc, report
 
 
@@ -52,9 +53,9 @@ def evaluate(model, iterator, criterion, num_labels):
 
     epoch_loss = 0
 
-    all_preds = np.array([])
-    all_labels = np.array([])
-
+    all_preds = np.array([], dtype=int)
+    all_labels = np.array([], dtype=int)
+    
     model.eval()
 
     with torch.no_grad():
@@ -71,7 +72,7 @@ def evaluate(model, iterator, criterion, num_labels):
             all_labels = np.append(all_labels, labels)
             epoch_loss += loss.item()
 
-    report, acc = classifiction_metric(all_preds, all_labels, [0, 1])
+    report, acc = classifiction_metric(all_preds, all_labels, ["negative", "positive"])
 
     return epoch_loss/len(iterator), acc, report
 
@@ -97,23 +98,19 @@ def main(config):
 
     """ 词向量准备 """
     pretrained_embeddings = text_field.vocab.vectors
-    pad_idx = text_field.vocab.stoi[text_field.pad_token]
-    unk_idx = text_field.vocab.stoi[text_field.unk_token]
+
 
     """ 模型准备 """
     if config.model_name == "TextCNN":
         filter_sizes = [int(val) for val in config.filter_sizes.split()]
-        model = TextCNN.TextCNN(
-            len(text_field.vocab), config.glove_word_dim, config.filter_num, filter_sizes,
-            config.output_dim, config.dropout, pad_idx)
+        model = TextCNN.TextCNN(config.glove_word_dim, config.filter_num, filter_sizes,
+            config.output_dim, config.dropout, pretrained_embeddings)
     elif config.model_name == "TextRNN":
-        model = TextRNN.TextRNN(len(text_field.vocab), config.glove_word_dim, config.output_dim,
-                            config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pad_idx)
-    
-    # 模型填充词向量
-    model.embedding.weight.data.copy_(pretrained_embeddings)
-    model.embedding.weight.data[unk_idx] = torch.rand(config.glove_word_dim)
-    model.embedding.weight.data[pad_idx] = torch.rand(config.glove_word_dim)
+        model = TextRNN.TextRNN(config.glove_word_dim, config.output_dim,
+                            config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
+    elif config.model_name == "LSTMATT":
+        model = LSTMATT.LSTMATT(config.glove_word_dim, config.output_dim,
+                            config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
 
     optimizer = optim.Adam(model.parameters())
     criterion = nn.CrossEntropyLoss()
@@ -157,7 +154,7 @@ def main(config):
 
 if __name__ == "__main__":
 
-    model_name = "TextRNN"   # TextRNN, TextCNN
+    model_name = "LSTMATT"   # TextRNN, TextCNN
     data_dir = "/home/songyingxin/datasets/SST-2"
     cache_dir = data_dir + "/cache/"
     embedding_folder = "/home/songyingxin/datasets/WordEmbedding/"
@@ -167,6 +164,9 @@ if __name__ == "__main__":
         main(args.get_args(data_dir, cache_dir, embedding_folder))
     elif model_name == "TextRNN":
         from TextRNN import args, TextRNN
+        main(args.get_args(data_dir, cache_dir, embedding_folder))
+    elif model_name == "LSTMATT":
+        from LSTM_ATT import args, LSTMATT
         main(args.get_args(data_dir, cache_dir, embedding_folder))
 
 

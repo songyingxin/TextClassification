@@ -39,6 +39,8 @@ python RUN_mnist.py --model_name=LR or CNN or FNN
 
 ## Medium-SST
 
+**注意：** 由于这是实验性质的数据，因此没有死扣参数细节，主要专注于模型的实现，且考虑到词向量的方式可能将被淘汰，因此许多小的Trick 就没有实现，如 Highway Networks 等。
+
 ```
 python run_SST.py  # 需要在该文件下更改你要运行的模型名字，我将每个模型的参数独立了出来，便于理解调试
 ```
@@ -48,6 +50,8 @@ python run_SST.py  # 需要在该文件下更改你要运行的模型名字，�
 | TextCNN               | 92.53% | 0.925 | 0.195 |
 | TextRNN               | 92.13% | 0.924 | 0.207 |
 | LSTM_ATT              |   93.07     |  0.930     |  0.285     |
+| TextRCNN  | 94.06 | 0.940 | 0.165
+
 
 ## Hard-RC
 

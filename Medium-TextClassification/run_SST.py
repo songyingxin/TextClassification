@@ -111,6 +111,10 @@ def main(config):
     elif config.model_name == "LSTMATT":
         model = LSTMATT.LSTMATT(config.glove_word_dim, config.output_dim,
                             config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
+    elif config.model_name == 'TextRCNN':
+        model = TextRCNN.TextRCNN(config.glove_word_dim, config.output_dim,
+                                  config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
+
 
     optimizer = optim.Adam(model.parameters())
     criterion = nn.CrossEntropyLoss()
@@ -154,7 +158,7 @@ def main(config):
 
 if __name__ == "__main__":
 
-    model_name = "LSTMATT"   # TextRNN, TextCNN
+    model_name = "TextRNN"   # TextRNN, TextCNN， lSTMATT, TextRCNN
     data_dir = "/home/songyingxin/datasets/SST-2"
     cache_dir = data_dir + "/cache/"
     embedding_folder = "/home/songyingxin/datasets/WordEmbedding/"
@@ -167,6 +171,9 @@ if __name__ == "__main__":
         main(args.get_args(data_dir, cache_dir, embedding_folder))
     elif model_name == "LSTMATT":
         from LSTM_ATT import args, LSTMATT
+        main(args.get_args(data_dir, cache_dir, embedding_folder))
+    elif model_name == "TextRCNN":
+        from TextRCNN import args, TextRCNN
         main(args.get_args(data_dir, cache_dir, embedding_folder))
 
 

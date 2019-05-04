@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import torch
 
 from models.LSTM import LSTM
-
+from models.Linear import Linear
 
 class TextRNN(nn.Module):
 
@@ -14,7 +14,7 @@ class TextRNN(nn.Module):
             pretrained_embeddings, freeze=False)
         self.rnn = LSTM(embedding_dim, hidden_size, num_layers,bidirectional, dropout)
 
-        self.fc = nn.Linear(hidden_size * 2, output_dim)
+        self.fc = Linear(hidden_size * 2, output_dim)
         self.dropout = nn.Dropout(dropout)
 
 
@@ -24,7 +24,7 @@ class TextRNN(nn.Module):
         embedded = self.dropout(self.embedding(text))
         # embedded: [sent len, batch size, emb dim]
 
-        hidden, _ = self.rnn(embedded, text_lengths)
+        hidden, outputs = self.rnn(embedded, text_lengths)
 
         hidden = self.dropout(
             torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1))  # 连接最后一层的双向输出

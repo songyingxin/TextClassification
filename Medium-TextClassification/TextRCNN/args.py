@@ -5,7 +5,7 @@ def get_args(data_dir, cache_dir, embedding_folder):
 
     parser = argparse.ArgumentParser(description='SST')
 
-    parser.add_argument("--model_name", default="TextRNN",
+    parser.add_argument("--model_name", default="TextRCNN",
                         type=str, help="这批参数所属的模型的名字")
     parser.add_argument("--seed", default=1234, type=int, help="随机种子")
 
@@ -21,7 +21,7 @@ def get_args(data_dir, cache_dir, embedding_folder):
 
     # 优化参数
     parser.add_argument("--batch_size", default=64, type=int)
-    parser.add_argument("--epoch_num", default=5, type=int)
+    parser.add_argument("--epoch_num", default=2, type=int)
     parser.add_argument("--dropout", default=0.4, type=float)
 
     # 模型参数
@@ -46,7 +46,6 @@ def get_args(data_dir, cache_dir, embedding_folder):
         '--glove_word_dim',
         default=300, type=int,
         help='word embedding size (default: 300)')
-    
 
     config = parser.parse_args()
 

@@ -55,3 +55,13 @@ python run_SST.py  # 需要在该文件下更改你要运行的模型名字，�
 
 ## Hard-RC
 
+
+
+
+## Reference Papers
+
+[1] TextCNN： Convolutional Neural Networks for Sentence Classification
+[3] A Sensitivity Analysis of (and Practitioners' Guide to) Convolutional Neural Networks for Sentence Classification
+[4] Recurrent Convolutional Neural Network for Text Classification
+[5] Hierarchical Attention Networks for Document Classification
+[n] Large Scale Multi-label Text Classification With Deep Learning

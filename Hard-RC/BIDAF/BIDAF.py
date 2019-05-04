@@ -5,8 +5,8 @@ import torch.nn.functional as F
 
 class BIDAF(nn.Module):
 
-    def __init__(self, args, pretrained):
+    def __init__(self, char_pretrained, word_pretrained):
         super(BIDAF, self).__init__()
 
-        self.char_emb = nn.Embedding(args.glove_char_size, config.glove_char_dim, padding_idx=1)
+        self.char_emb = nn.Embedding.from_pretrained(char_pretrained, freeze=False)
         

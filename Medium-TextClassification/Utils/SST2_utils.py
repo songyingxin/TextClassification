@@ -24,3 +24,4 @@ def load_sst2(path, text_field, label_field, batch_size, device, embedding_file)
     )
 
     return train_iter, dev_iter, test_iter
+

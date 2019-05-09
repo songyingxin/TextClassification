@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models.Conv import Conv
+from models.Conv import Conv1d
 from models.Linear import Linear
 
 
@@ -15,7 +15,7 @@ class TextCNN(nn.Module):
         self.embedding = nn.Embedding.from_pretrained(
             pretrained_embeddings, freeze=False)
 
-        self.convs = Conv(embedding_dim,n_filters,filter_sizes)
+        self.convs = Conv1d(embedding_dim,n_filters,filter_sizes)
 
         self.fc = Linear(len(filter_sizes) * n_filters, output_dim)
 

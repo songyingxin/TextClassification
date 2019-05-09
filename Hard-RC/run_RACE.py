@@ -30,14 +30,22 @@ def main(config):
         torch.backends.cudnn.deterministic = True  # cudnn 使用确定性算法，保证每次结果一样
     
     raw_field = data.RawField()
-    char_nesting = data.Field(batch_first=True, tokenize=list, lower=True)
-    char_field = data.NestedField(char_nesting, tokenize=word_tokenize)
+    raw_field.is_target = False
     word_field = data.Field(
         batch_first=True, tokenize=word_tokenize,
         lower=True, include_lengths=True)
     label_field = data.Field(sequential=False, unk_token=None, use_vocab=False)
 
-    train_iterator, dev_iterator = load_squad(config.data_path, raw_field, char_field, word_field, label_field, config.train_batch_size, config.dev_batch_size, device, config.glove_word_file, config.glove_char_file, config.cache_path)
+    train_iterator, dev_iterator = load_squad(config.data_path, raw_field, word_field, label_field, config.train_batch_size, config.dev_batch_size, device, config.glove_word_file,  config.cache_path)
+
+    pretrained_embeddings = word_field.vocab.vectors
+
+    model = BIDAF.BIDAF(pretrained_embeddings, config.glove_wored_dim, config.hidden_size, config.num_layers, config.dropout)
+    optimizer = optim.Adam(model.parameters())
+    criterion = nn.CrossEntropyLoss()
+
+    model = model.to(device)
+    criterion = criterion.to(device)
 
 
     

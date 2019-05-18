@@ -25,10 +25,11 @@
 ## 数据集
 
 本仓库分别采用三个数据集： Mnist 手写数字识别， SST-2情感分类，RACE阅读理解数据集。
-其中， SST-2数据集来自[Glue](https://gluebenchmark.com/tasks)， 考虑到 SST-2 并没有给出测试集，因此我将训练集的2000多个样本划分出来形成测试集。
-RACE 数据集可以从 [RACE](http://www.qizhexie.com//data/RACE_leaderboard)下载。之所以不采用 squad 是后来考虑到 squad 太过繁琐，其实不易于理解，使用。
 
-不过，推荐从我的百度云下载，后续我会给出连接。
+- SST-2数据集来自[Glue](https://gluebenchmark.com/tasks)， 考虑到 SST-2 并没有给出测试集，因此我将训练集的2000多个样本划分出来形成测试集。
+- RACE 数据集可以从 [RACE](http://www.qizhexie.com//data/RACE_leaderboard)下载。之所以不采用 squad 是后来考虑到 squad 太过繁琐，其实不易于理解，使用。
+
+不过，推荐从我的百度云下载，因为我自己做了前期的数据简单处理以及数据分析工作，后续我会给出连接。
 
 
 ## Easy
@@ -60,8 +61,6 @@ python run_SST.py  # 需要在该文件下更改你要运行的模型名字，�
 ## Hard-RC
 
 - 一个小tirck： 复杂模型常采用 char-level + word-level 来获得词的最终embedding， 考虑到 Bert 终结了此道， 因此，感觉无甚必要去实现这些细节，因此，此时只使用了 word-level 来作为模型的 Embedding 层。
-
-
 
 ## Reference Papers
 

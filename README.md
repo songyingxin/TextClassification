@@ -11,7 +11,7 @@
 
 ## Models
 
-**对于模型，我大多都在[我的博客](https://www.zhihu.com/people/songyingxin/posts)内做了详细的介绍， 简单模型一笔略过， 复杂模型往往都单独独立一篇文章。 **
+**对于模型，我大多都在[我的博客](https://www.zhihu.com/people/songyingxin/posts)内做了详细的介绍， 简单模型一笔略过， 复杂模型往往都单独独立一篇文章。**
 
 最近，为了测试 `Highway Networks` 在连接词向量上的表现， 添加了通过 `Highway Networks` 融合 `char-level` 向量和 `word-level` 向量， 主要与之前的模型进行对比。 
 
@@ -82,6 +82,8 @@ tensorboard --logdir=.log   # 可视化分析
 | TextRNNHighway | 92.03 | 92.03 | 0.199 |
 | LSTMATTHighway | 93.02 | 93.01 | 0.278 |
 | TextRCNNHighway | 93.266 | 93.37 | 0.167 |
+### Analysis
+
 由上表可以看出， 复杂模型要比简单模型表现好， 从 loss 曲线上看， 加上 `Highway Networks` 效果普遍会好，但并没有使得模型表现突飞猛进， 可能是由于SST数据集所用词汇相对简单的原因，OV问题并不严重 。
 
 

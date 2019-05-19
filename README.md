@@ -78,7 +78,6 @@ tensorboard --logdir=.log   # 可视化分析
 | TextRNNHighway |  |  |  |
 | LSTMATTHighway |  |  |  |
 | TextRCNNHighway |  |  |  |
-|  |  |  |  |
 
 
 由上表可以看出， 复杂模型要比简单模型表现好， 加上 `Highway Networks` 效果普遍会好，但并没有使得模型表现突出，我个人猜测是数据集的原因，SST-2 并没有很严重的 OOV 问题。

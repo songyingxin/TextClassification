@@ -54,7 +54,9 @@ python RUN_mnist.py --model_name=LR or CNN or FNN
 
 ## Medium-SST
 
-**注意：** 由于这是实验性质的数据，因此没有死扣参数细节，主要专注于模型的实现，且考虑到词向量的方式可能将被淘汰，因此许多小的Trick 就没有实现，如 Highway Networks 等。
+**注意：** 由于这是实验性质的数据，因此没有死扣参数细节，主要专注于模型的实现。
+
+### Train and Test
 
 ```
 # word-level
@@ -68,6 +70,8 @@ python run_Highway_SST.py  # test
 tensorboard --logdir=.log   # 可视化分析
 ```
 
+### Results
+
 | model name            | acc    | F1    | loss  |
 | --------------------- | ------ | ----- | ----- |
 | TextCNN               | 92.53 | 92.5 | 0.195 |
@@ -78,7 +82,7 @@ tensorboard --logdir=.log   # 可视化分析
 | TextRNNHighway | 92.03 | 92.03 | 0.199 |
 | LSTMATTHighway | 93.02 | 93.01 | 0.278 |
 | TextRCNNHighway | 93.266 | 93.37 | 0.167 |
-由上表可以看出， 复杂模型要比简单模型表现好， 从 loss 曲线上看， 加上 `Highway Networks` 效果普遍会好，但并没有使得模型表现突飞猛进， 可能是由于SST数据集所用词汇相对简单的原因，使得OV问题并不严重 。
+由上表可以看出， 复杂模型要比简单模型表现好， 从 loss 曲线上看， 加上 `Highway Networks` 效果普遍会好，但并没有使得模型表现突飞猛进， 可能是由于SST数据集所用词汇相对简单的原因，OV问题并不严重 。
 
 
 ## Hard-RC

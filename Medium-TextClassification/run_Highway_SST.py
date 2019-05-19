@@ -65,7 +65,11 @@ def main(config):
     elif config.model_name == "TextCNNHighway":
         filter_sizes = [int(val) for val in config.filter_sizes.split()]
         model = TextCNNHighway.TextCNNHighway(config.glove_word_dim, config.glove_char_dim, config.filter_num, filter_sizes, config.output_dim, config.dropout, word_embeddings, char_embeddings, config.highway_layers)
-    
+    elif config.model_name == "LSTMATTHighway":
+        model = LSTMATTHighway.LSTMATTHighway(config.glove_word_dim, config.glove_char_dim, config.output_dim, config.hidden_size, config.num_layers, config.bidirectional, config.dropout, word_embeddings, char_embeddings, config.highway_layers)
+    elif config.model_name == "TextRCNNHighway":
+        model = TextRCNNHighway.TextRCNNHighway(config.glove_word_dim, config.glove_char_dim, config.output_dim, config.hidden_size, config.num_layers, config.bidirectional, config.dropout, word_embeddings, char_embeddings, config.highway_layers)
+
     optimizer = optim.Adam(model.parameters())
     criterion = nn.CrossEntropyLoss()
 
@@ -90,7 +94,7 @@ def main(config):
 
 if __name__ == "__main__":
 
-    model_name = "TextRNNHighway"   # TextRNN, TextCNN， lSTMATT, TextRCNN
+    model_name = "TextRCNNHighway"   # TextRNN, TextCNN， lSTMATT, TextRCNN
     data_dir = "/home/songyingxin/datasets/SST-2"
     cache_dir = data_dir + "/cache/"
     embedding_folder = "/home/songyingxin/datasets/WordEmbedding/glove/"
@@ -105,9 +109,11 @@ if __name__ == "__main__":
     elif model_name == "TextRNNHighway":
         from TextRNNHighway import args, TextRNNHighway
         main(args.get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir))
-    elif model_name == "LSTMATT":
-        from LSTM_ATT import args, LSTMATT
-        main(args.get_args(data_dir, cache_dir, embedding_folder))
-    elif model_name == "TextRCNN":
-        from TextRCNN import args, TextRCNN
-        main(args.get_args(data_dir, cache_dir, embedding_folder))
+    elif model_name == "LSTMATTHighway":
+        from LSTMATTHighway import args, LSTMATTHighway
+        main(args.get_args(data_dir, cache_dir,
+                           embedding_folder, model_dir, log_dir))
+    elif model_name == "TextRCNNHighway":
+        from TextRCNNHighway import args, TextRCNNHighway
+        main(args.get_args(data_dir, cache_dir,
+                           embedding_folder, model_dir, log_dir))

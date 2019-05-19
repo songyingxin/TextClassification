@@ -87,7 +87,7 @@ if __name__ == "__main__":
     model_name = "TextCNN"   # TextRNN, TextCNN， lSTMATT, TextRCNN
     data_dir = "/home/songyingxin/datasets/SST-2"
     cache_dir = data_dir + "/cache/"
-    embedding_folder = "/home/songyingxin/datasets/WordEmbedding/"
+    embedding_folder = "/home/songyingxin/datasets/WordEmbedding/glove/"
 
     model_dir = ".models/"
     log_dir = ".log/"

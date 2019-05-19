@@ -5,7 +5,7 @@ def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
 
     parser = argparse.ArgumentParser(description='SST')
 
-    parser.add_argument("--model_name", default="TextRCNN",
+    parser.add_argument("--model_name", default="TextRCNNHighway",
                         type=str, help="这批参数所属的模型的名字")
     parser.add_argument("--seed", default=1234, type=int, help="随机种子")
 
@@ -21,10 +21,10 @@ def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
 
     # 输出文件名
     parser.add_argument(
-        "--model_dir", default=model_dir + "TextRCNN/", type=str, help="输出模型的保存地址"
+        "--model_dir", default=model_dir + "TextRCNNHighway/", type=str, help="输出模型的保存地址"
     )
     parser.add_argument(
-        "--log_dir", default=log_dir + "TextRCNN/", type=str, help="日志文件地址"
+        "--log_dir", default=log_dir + "TextRCNNHighway/", type=str, help="日志文件地址"
     )
 
     parser.add_argument("--do_train",
@@ -47,7 +47,6 @@ def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
     parser.add_argument('--num_layers', default=2, type=int, help='RNN层数')
     parser.add_argument("--bidirectional", default=True, type=bool)
 
-
     # word Embedding
     parser.add_argument(
         '--glove_word_file',
@@ -61,6 +60,23 @@ def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
         '--glove_word_dim',
         default=300, type=int,
         help='word embedding size (default: 300)')
+
+    # char embedding
+    parser.add_argument(
+        '--glove_char_file',
+        default=embedding_folder + 'glove.840B.300d-char.txt',
+        type=str, help='path of char embedding file')
+    parser.add_argument(
+        '--glove_char_size',
+        default=94, type=int, help="Corpus size of Glove chars")
+    parser.add_argument(
+        '--glove_char_dim',
+        default=300, type=int, help='char embedding size')
+
+    # highway networks
+    parser.add_argument(
+        '--highway_layers',
+        default=2, type=int, help="highway networks 的层数")
 
     config = parser.parse_args()
 

@@ -50,7 +50,7 @@ def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
     # word Embedding
     parser.add_argument(
         '--glove_word_file',
-        default=embedding_folder + 'glove/glove.840B.300d.txt',
+        default=embedding_folder + 'glove.840B.300d.txt',
         type=str, help='path of word embedding file')
     parser.add_argument(
         '--glove_word_size',
@@ -61,19 +61,6 @@ def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
         default=300, type=int,
         help='word embedding size (default: 300)')
 
-    # char embedding
-    parser.add_argument(
-        '--glove_char_file',
-        default=embedding_folder + "glove/glove.840B.300d-char.txt",
-        type=str, help='path of char embedding file')
-    parser.add_argument(
-        '--glove_char_size',
-        default=94, type=int,
-        help='Corpus size for char embedding')
-    parser.add_argument(
-        '--glove_char_dim',
-        default=300, type=int,
-        help='char embedding size (default: 64)')
 
     config = parser.parse_args()
 

@@ -70,17 +70,15 @@ tensorboard --logdir=.log   # 可视化分析
 
 | model name            | acc    | F1    | loss  |
 | --------------------- | ------ | ----- | ----- |
-| TextCNN               | 92.53 | 0.925 | 0.195 |
-| TextRNN               | 92.13 | 0.924 | 0.207 |
-| LSTM_ATT              |   93.07     |  0.930     |  0.285     |
-| TextRCNN | 94.06 | 0.940 | 0.165 |
+| TextCNN               | 92.53 | 92.5 | 0.195 |
+| TextRNN               | 92.13 | 92.4 | 0.207 |
+| LSTM_ATT              |   93.07     |  93.0    |  0.285     |
+| TextRCNN | 94.06 | 94.0 | 0.165 |
 | TextCNNHighway | 93.21 | 93.21 | 0.185 |
-| TextRNNHighway |  |  |  |
-| LSTMATTHighway |  |  |  |
-| TextRCNNHighway |  |  |  |
-
-
-由上表可以看出， 复杂模型要比简单模型表现好， 加上 `Highway Networks` 效果普遍会好，但并没有使得模型表现突出，我个人猜测是数据集的原因，SST-2 并没有很严重的 OOV 问题。
+| TextRNNHighway | 92.03 | 92.03 | 0.199 |
+| LSTMATTHighway | 93.02 | 93.01 | 0.278 |
+| TextRCNNHighway | 93.266 | 93.37 | 0.167 |
+由上表可以看出， 复杂模型要比简单模型表现好， 从 loss 曲线上看， 加上 `Highway Networks` 效果普遍会好，但并没有使得模型表现突飞猛进， 可能是由于SST数据集所用词汇相对简单的原因，使得OV问题并不严重 。
 
 
 ## Hard-RC

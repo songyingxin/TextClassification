@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 class Conv1d(nn.Module):
     def __init__(self, in_channels, out_channels, filter_sizes):
-        super(Conv, self).__init__()
+        super(Conv1d, self).__init__()
         self.convs = nn.ModuleList([
             nn.Conv1d(in_channels=in_channels,
                       out_channels=out_channels,

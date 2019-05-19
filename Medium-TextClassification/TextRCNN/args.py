@@ -1,7 +1,7 @@
 import argparse
 
 
-def get_args(data_dir, cache_dir, embedding_folder):
+def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
 
     parser = argparse.ArgumentParser(description='SST')
 
@@ -18,6 +18,21 @@ def get_args(data_dir, cache_dir, embedding_folder):
     parser.add_argument(
         "--sequence_length", default=60, type=int, help="句子长度"
     )
+
+    # 输出文件名
+    parser.add_argument(
+        "--model_dir", default=model_dir + "TextRCNN/", type=str, help="输出模型的保存地址"
+    )
+    parser.add_argument(
+        "--log_dir", default=log_dir + "TextRCNN/", type=str, help="日志文件地址"
+    )
+
+    parser.add_argument("--do_train",
+                        action='store_true',
+                        help="Whether to run training.")
+
+    parser.add_argument("--print_step", default=100,
+                        type=int, help="多少步存储一次模型")
 
     # 优化参数
     parser.add_argument("--batch_size", default=64, type=int)

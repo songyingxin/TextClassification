@@ -3,6 +3,7 @@ import random
 import time
 import numpy as np
 import argparse
+import os
 
 import torch
 import torch.optim as optim
@@ -16,70 +17,16 @@ from torchtext import vocab
 from Utils.utils import word_tokenize, get_device, epoch_time, classifiction_metric
 from Utils.SST2_utils import load_sst2
 
-
-def train(model, iterator, optimizer, criterion, num_labels):
-
-    epoch_loss = 0
-    
-    all_preds = np.array([], dtype=int)
-    all_labels = np.array([], dtype=int)
-    
-    model.train()
-    for batch in iterator:
-
-        optimizer.zero_grad()
-
-        logits = model(batch.text)
-
-        loss = criterion(logits.view(-1, num_labels), batch.label)
-        
-        labels = batch.label.detach().cpu().numpy()
-        preds = np.argmax(logits.detach().cpu().numpy(), axis=1)
-
-        all_preds = np.append(all_preds, preds)
-        all_labels = np.append(all_labels, labels)
-
-        loss.backward()
-        optimizer.step()
-
-        epoch_loss += loss.item()
-        
-    report, acc = classifiction_metric(
-        all_preds, all_labels,  ["negative", "positive"])
-    return epoch_loss/len(iterator), acc, report
-
-
-def evaluate(model, iterator, criterion, num_labels):
-
-    epoch_loss = 0
-
-    all_preds = np.array([], dtype=int)
-    all_labels = np.array([], dtype=int)
-    
-    model.eval()
-
-    with torch.no_grad():
-
-        for batch in iterator:
-            logits = model(batch.text)
-
-            loss = criterion(logits.view(-1, num_labels), batch.label)
-
-            labels = batch.label.detach().cpu().numpy()
-            preds = np.argmax(logits.detach().cpu().numpy(), axis=1)
-
-            all_preds = np.append(all_preds, preds)
-            all_labels = np.append(all_labels, labels)
-            epoch_loss += loss.item()
-
-    report, acc = classifiction_metric(all_preds, all_labels, ["negative", "positive"])
-
-    return epoch_loss/len(iterator), acc, report
-
-
-
+from train_eval import train, evaluate
 
 def main(config):
+
+    if not os.path.exists(config.model_dir):
+        os.makedirs(config.model_dir)
+
+    if not os.path.exists(config.log_dir):
+        os.makedirs(config.log_dir)
+
     print("\t \t \t the model name is {}".format(config.model_name))
     device, n_gpu = get_device()
 
@@ -99,61 +46,40 @@ def main(config):
     """ 词向量准备 """
     pretrained_embeddings = text_field.vocab.vectors
 
+    model_file = config.model_dir + 'model1.pt'
 
     """ 模型准备 """
     if config.model_name == "TextCNN":
         filter_sizes = [int(val) for val in config.filter_sizes.split()]
         model = TextCNN.TextCNN(config.glove_word_dim, config.filter_num, filter_sizes,
-            config.output_dim, config.dropout, pretrained_embeddings)
+                                config.output_dim, config.dropout, pretrained_embeddings)
     elif config.model_name == "TextRNN":
         model = TextRNN.TextRNN(config.glove_word_dim, config.output_dim,
-                            config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
+                                config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
     elif config.model_name == "LSTMATT":
         model = LSTMATT.LSTMATT(config.glove_word_dim, config.output_dim,
-                            config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
+                                config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
     elif config.model_name == 'TextRCNN':
         model = TextRCNN.TextRCNN(config.glove_word_dim, config.output_dim,
-                                  config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
-
-
+                                    config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
+    
     optimizer = optim.Adam(model.parameters())
     criterion = nn.CrossEntropyLoss()
 
     model = model.to(device)
     criterion = criterion.to(device)
 
-    best_dev_loss = float('inf')
-    for epoch in range(config.epoch_num):
-        start_time = time.time()
+    if config.do_train:
+        train(config.epoch_num, model, train_iterator, dev_iterator, optimizer, criterion, ['0', '1'], model_file, config.log_dir, config.print_step, 'word')
 
-        train_loss, train_acc, train_report = train(
-            model, train_iterator, optimizer, criterion, config.output_dim)
-        dev_loss, dev_acc, dev_report = evaluate(
-            model, dev_iterator, criterion, config.output_dim)
-
-        end_time = time.time()
-
-        epoch_mins, epoch_secs = epoch_time(start_time, end_time)
-
-        if dev_loss < best_dev_loss:
-            best_dev_loss = dev_loss
-            torch.save(model.state_dict(), 'tut2-model.pt')
-
-        print(f'---------------- Epoch: {epoch+1:02} | Epoch Time: {epoch_mins}m {epoch_secs}s ----------')
-        print("-------------- Train -------------")
-        print(f'\t \t Loss: {train_loss:.3f} |  Acc: {train_acc*100: .2f} %')
-        print('{}'.format(train_report))
-        print("-------------- Dev -------------")
-        print(f'\t \t Loss: {dev_loss: .3f} | Acc: {dev_acc*100: .2f} %')
-        print('{}'.format(dev_report))
-
-    model.load_state_dict(torch.load('tut2-model.pt'))
+    model.load_state_dict(torch.load(model_file))
 
     test_loss, test_acc, test_report = evaluate(
-        model, test_iterator, criterion, config.output_dim)
+        model, test_iterator, criterion, ['0', '1'], 'word')
     print("-------------- Test -------------")
-    print(f'\t \t Loss: {test_loss: .3f} | Acc: {test_acc*100: .2f} %')
-    print('{}'.format(test_report))
+    print("\t Loss: {} | Acc: {} | Micro avg F1: {} | Macro avg F1: {} | Weighted avg F1: {}".format(
+        test_loss, test_acc, test_report['micro avg']['f1-score'],
+        test_report['macro avg']['f1-score'], test_report['weighted avg']['f1-score']))
 
 
 if __name__ == "__main__":
@@ -163,18 +89,25 @@ if __name__ == "__main__":
     cache_dir = data_dir + "/cache/"
     embedding_folder = "/home/songyingxin/datasets/WordEmbedding/"
 
+    model_dir = ".models/"
+    log_dir = ".log/"
+
     if model_name == "TextCNN":
         from TextCNN import args, TextCNN
-        main(args.get_args(data_dir, cache_dir, embedding_folder))
+        main(args.get_args(data_dir, cache_dir,
+                           embedding_folder, model_dir, log_dir))
     elif model_name == "TextRNN":
         from TextRNN import args, TextRNN
-        main(args.get_args(data_dir, cache_dir, embedding_folder))
+        main(args.get_args(data_dir, cache_dir,
+                           embedding_folder, model_dir, log_dir))
     elif model_name == "LSTMATT":
         from LSTM_ATT import args, LSTMATT
-        main(args.get_args(data_dir, cache_dir, embedding_folder))
+        main(args.get_args(data_dir, cache_dir,
+                           embedding_folder, model_dir, log_dir))
     elif model_name == "TextRCNN":
         from TextRCNN import args, TextRCNN
-        main(args.get_args(data_dir, cache_dir, embedding_folder))
+        main(args.get_args(data_dir, cache_dir,
+                           embedding_folder, model_dir, log_dir))
 
 
     

@@ -38,12 +38,14 @@ def epoch_time(start_time, end_time):
 def classifiction_metric(preds, labels, label_list):
     """ 分类任务的评价指标， 传入的数据需要是 numpy 类型的 """
 
-    acc = metrics.accuracy_score(preds, labels)
+    acc = metrics.accuracy_score(labels, preds)
 
-    report = metrics.classification_report(labels, preds, target_names=label_list, digits=5)
+    labels_list = [i for i in range(len(label_list))]
 
+    report = metrics.classification_report(
+        labels, preds, labels=labels_list, target_names=label_list, digits=5, output_dict=True)
 
-    return report, acc
+    return acc, report
 
 
 if __name__ == "__main__":

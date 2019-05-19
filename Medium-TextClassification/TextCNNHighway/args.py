@@ -5,9 +5,9 @@ def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
 
     parser = argparse.ArgumentParser(description='SST')
 
-    parser.add_argument("--model_name", default="LSTMATT",
+    parser.add_argument("--model_name", default="TextCNNHighway",
                         type=str, help="这批参数所属的模型的名字")
-    parser.add_argument("--seed", default=1234, type=int, help="随机种子")
+    parser.add_argument("--seed", default=3456, type=int, help="随机种子")
 
     # data_util
     parser.add_argument(
@@ -21,10 +21,10 @@ def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
 
     # 输出文件名
     parser.add_argument(
-        "--model_dir", default=model_dir + "LSTMATT/", type=str, help="输出模型的保存地址"
+        "--model_dir", default=model_dir + "TextCNNHighway/", type=str, help="输出模型的保存地址"
     )
     parser.add_argument(
-        "--log_dir", default=log_dir + "LSTMATT/", type=str, help="日志文件地址"
+        "--log_dir", default=log_dir + "TextCNNHighway/", type=str, help="日志文件地址"
     )
 
     parser.add_argument("--do_train",
@@ -33,24 +33,24 @@ def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
 
     parser.add_argument("--print_step", default=100,
                         type=int, help="多少步存储一次模型")
-
     # 优化参数
     parser.add_argument("--batch_size", default=64, type=int)
-    parser.add_argument("--epoch_num", default=5, type=int)
+    parser.add_argument("--epoch_num", default=4, type=int)
     parser.add_argument("--dropout", default=0.4, type=float)
 
     # 模型参数
     parser.add_argument("--output_dim", default=2, type=int)
 
-    # TextRNN 参数
-    parser.add_argument("--hidden_size", default=60, type=int, help="隐层单元数")
-    parser.add_argument('--num_layers', default=2, type=int, help='RNN层数')
-    parser.add_argument("--bidirectional", default=True, type=bool)
+    # TextCNN 参数
+    parser.add_argument("--filter_num", default=200,
+                        type=int, help="filter 的数量")
+    parser.add_argument("--filter_sizes", default="1 2 3 4 5",
+                        type=str, help="filter 的 size")
 
     # word Embedding
     parser.add_argument(
         '--glove_word_file',
-        default=embedding_folder + 'glove/glove.840B.300d.txt',
+        default=embedding_folder + 'glove.840B.300d.txt',
         type=str, help='path of word embedding file')
     parser.add_argument(
         '--glove_word_size',
@@ -60,20 +60,23 @@ def get_args(data_dir, cache_dir, embedding_folder, model_dir, log_dir):
         '--glove_word_dim',
         default=300, type=int,
         help='word embedding size (default: 300)')
-
+    
     # char embedding
     parser.add_argument(
         '--glove_char_file',
-        default=embedding_folder + "glove/glove.840B.300d-char.txt",
+        default=embedding_folder + 'glove.840B.300d-char.txt',
         type=str, help='path of char embedding file')
     parser.add_argument(
         '--glove_char_size',
-        default=94, type=int,
-        help='Corpus size for char embedding')
+        default=94, type=int, help="Corpus size of Glove chars")
     parser.add_argument(
         '--glove_char_dim',
-        default=300, type=int,
-        help='char embedding size (default: 64)')
+        default=300, type=int, help='char embedding size')
+
+    # highway networks
+    parser.add_argument(
+        '--highway_layers',
+        default=2, type=int, help="highway networks 的层数")
 
     config = parser.parse_args()
 

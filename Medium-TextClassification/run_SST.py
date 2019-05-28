@@ -41,7 +41,7 @@ def main(config):
     text_field = data.Field(tokenize='spacy', lower=True, include_lengths=True, fix_length=config.sequence_length)
     label_field = data.LabelField(dtype=torch.long)
 
-    train_iterator, dev_iterator, test_iterator = load_sst2(config.data_path, text_field, label_field, config.batch_size, device, config.glove_word_file)
+    train_iterator, dev_iterator, test_iterator = load_sst2(config.data_path, text_field, label_field, config.batch_size, device, config.glove_word_file, config.cache_path)
 
     """ 词向量准备 """
     pretrained_embeddings = text_field.vocab.vectors
@@ -50,16 +50,21 @@ def main(config):
 
     """ 模型准备 """
     if config.model_name == "TextCNN":
+        from TextCNN import TextCNN
         filter_sizes = [int(val) for val in config.filter_sizes.split()]
         model = TextCNN.TextCNN(config.glove_word_dim, config.filter_num, filter_sizes,
                                 config.output_dim, config.dropout, pretrained_embeddings)
     elif config.model_name == "TextRNN":
+        from TextRNN import TextRNN
         model = TextRNN.TextRNN(config.glove_word_dim, config.output_dim,
                                 config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
+
     elif config.model_name == "LSTMATT":
+        from LSTM_ATT import LSTMATT
         model = LSTMATT.LSTMATT(config.glove_word_dim, config.output_dim,
                                 config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
     elif config.model_name == 'TextRCNN':
+        from TextRCNN import TextRCNN
         model = TextRCNN.TextRCNN(config.glove_word_dim, config.output_dim,
                                     config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
     
@@ -86,7 +91,7 @@ if __name__ == "__main__":
 
     model_name = "TextCNN"   # TextRNN, TextCNN， lSTMATT, TextRCNN
     data_dir = "/home/songyingxin/datasets/SST-2"
-    cache_dir = data_dir + "/cache/"
+    cache_dir = ".cache/"
     embedding_folder = "/home/songyingxin/datasets/WordEmbedding/glove/"
 
     model_dir = ".models/"

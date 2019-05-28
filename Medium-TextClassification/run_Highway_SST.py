@@ -48,7 +48,7 @@ def main(config):
 
 
     train_iterator, dev_iterator, test_iterator =  sst_word_char(
-        config.data_path, word_field, char_field, label_field, config.batch_size, device, config.glove_word_file, config.glove_char_file)
+        config.data_path, word_field, char_field, label_field, config.batch_size, device, config.glove_word_file, config.glove_char_file, config.cache_path)
 
     """ 词向量准备 """
     word_embeddings = word_field.vocab.vectors
@@ -58,16 +58,20 @@ def main(config):
 
     """ 模型准备 """
     if config.model_name == "TextRNNHighway":
+        from TextRNNHighway import TextRNNHighway
         model = TextRNNHighway.TextRNNHighway(
             config.glove_word_dim, config.glove_char_dim, config.output_dim,
             config.hidden_size, config.num_layers, config.bidirectional, 
             config.dropout, word_embeddings, char_embeddings, config.highway_layers)
     elif config.model_name == "TextCNNHighway":
+        from TextCNNHighway import TextCNNHighway
         filter_sizes = [int(val) for val in config.filter_sizes.split()]
         model = TextCNNHighway.TextCNNHighway(config.glove_word_dim, config.glove_char_dim, config.filter_num, filter_sizes, config.output_dim, config.dropout, word_embeddings, char_embeddings, config.highway_layers)
     elif config.model_name == "LSTMATTHighway":
+        from LSTMATTHighway import LSTMATTHighway
         model = LSTMATTHighway.LSTMATTHighway(config.glove_word_dim, config.glove_char_dim, config.output_dim, config.hidden_size, config.num_layers, config.bidirectional, config.dropout, word_embeddings, char_embeddings, config.highway_layers)
     elif config.model_name == "TextRCNNHighway":
+        from TextRCNNHighway import TextRCNNHighway
         model = TextRCNNHighway.TextRCNNHighway(config.glove_word_dim, config.glove_char_dim, config.output_dim, config.hidden_size, config.num_layers, config.bidirectional, config.dropout, word_embeddings, char_embeddings, config.highway_layers)
 
     optimizer = optim.Adam(model.parameters())
@@ -96,7 +100,7 @@ if __name__ == "__main__":
 
     model_name = "TextRCNNHighway"   # TextRNN, TextCNN， lSTMATT, TextRCNN
     data_dir = "/home/songyingxin/datasets/SST-2"
-    cache_dir = data_dir + "/cache/"
+    cache_dir = ".cache/"
     embedding_folder = "/home/songyingxin/datasets/WordEmbedding/glove/"
 
     model_dir = ".models/"

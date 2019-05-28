@@ -4,7 +4,7 @@ from torchtext import datasets
 from torchtext import vocab
 
 
-def load_sst2(path, text_field, label_field, batch_size, device, embedding_file):
+def load_sst2(path, text_field, label_field, batch_size, device, embedding_file, cache_dir):
 
     train, dev, test = data.TabularDataset.splits(
         path=path, train='train.tsv', validation='dev.tsv',
@@ -12,7 +12,7 @@ def load_sst2(path, text_field, label_field, batch_size, device, embedding_file)
         fields=[('text', text_field), ('label', label_field)])
     print("the size of train: {}, dev:{}, test:{}".format(
         len(train.examples), len(dev.examples), len(test.examples)))
-    vectors = vocab.Vectors(embedding_file)
+    vectors = vocab.Vectors(embedding_file, cache_dir)
 
     text_field.build_vocab(
         train, dev, test, max_size=25000,
@@ -26,7 +26,7 @@ def load_sst2(path, text_field, label_field, batch_size, device, embedding_file)
     return train_iter, dev_iter, test_iter
 
 
-def sst_word_char(path, word_field, char_field, label_field, batch_size, device, word_emb_file, char_emb_file):
+def sst_word_char(path, word_field, char_field, label_field, batch_size, device, word_emb_file, char_emb_file, cache_dir):
 
     fields = {
         'text': [('text_word', word_field), ('text_char', char_field)],
@@ -37,8 +37,8 @@ def sst_word_char(path, word_field, char_field, label_field, batch_size, device,
         test='test.jsonl', format='json', skip_header=True,
         fields=fields)
     
-    word_vectors = vocab.Vectors(word_emb_file)
-    char_vectors = vocab.Vectors(char_emb_file)
+    word_vectors = vocab.Vectors(word_emb_file, cache_dir)
+    char_vectors = vocab.Vectors(char_emb_file, cache_dir)
 
     word_field.build_vocab(
         train, dev, test, max_size=25000,

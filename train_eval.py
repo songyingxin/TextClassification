@@ -70,7 +70,7 @@ def train(epoch_num, model, train_dataloader, dev_dataloader, optimizer, criteri
                     writer.add_scalar(label + ":" + "f1/dev",
                                       dev_report[label]['f1-score'], c)
 
-                print_list = ['micro avg', 'macro avg', 'weighted avg']
+                print_list = ['macro avg', 'weighted avg']
                 for label in print_list:
                     writer.add_scalar(label + ":" + "f1/train",
                                       train_report[label]['f1-score'], c)

@@ -65,8 +65,11 @@ def main(config):
                                 config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
     elif config.model_name == 'TextRCNN':
         from TextRCNN import TextRCNN
-        model = TextRCNN.TextRCNN(config.glove_word_dim, config.output_dim,
-                                    config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
+        model = TextRCNN.TextRCNN(config.glove_word_dim, config.output_dim,config.hidden_size, config.num_layers, config.bidirectional, config.dropout, pretrained_embeddings)
+
+    elif config.model_name == "TransformerText":
+        from TransformerText import TransformerText
+        model = TransformerText.TransformerText(config.head_num, config.encode_layer, config.glove_word_dim, config.d_model, config.d_ff, config.output_dim, config.dropout, pretrained_embeddings)
     
     optimizer = optim.Adam(model.parameters())
     criterion = nn.CrossEntropyLoss()
@@ -82,38 +85,37 @@ def main(config):
     test_loss, test_acc, test_report = evaluate(
         model, test_iterator, criterion, ['0', '1'], 'word')
     print("-------------- Test -------------")
-    print("\t Loss: {} | Acc: {} | Micro avg F1: {} | Macro avg F1: {} | Weighted avg F1: {}".format(
-        test_loss, test_acc, test_report['micro avg']['f1-score'],
-        test_report['macro avg']['f1-score'], test_report['weighted avg']['f1-score']))
+    print("\t Loss: {} | Acc: {} | Macro avg F1: {} | Weighted avg F1: {}".format(
+        test_loss, test_acc, test_report['macro avg']['f1-score'], test_report['weighted avg']['f1-score']))
 
 
 if __name__ == "__main__":
 
-    model_name = "TextCNN"   # TextRNN, TextCNN， lSTMATT, TextRCNN
-    data_dir = "/home/songyingxin/datasets/SST-2"
+    model_name = "TransformerText"   # TextRNN, TextCNN， lSTMATT, TextRCNN, TransformerText
+    data_dir = "/search/hadoop02/suanfa/songyingxin/data/SST-2"
     cache_dir = ".cache/"
-    embedding_folder = "/home/songyingxin/datasets/WordEmbedding/glove/"
+    embedding_folder = "/search/hadoop02/suanfa/songyingxin/data/embedding/glove/"
 
     model_dir = ".models/"
     log_dir = ".log/"
 
     if model_name == "TextCNN":
         from TextCNN import args, TextCNN
-        main(args.get_args(data_dir, cache_dir,
-                           embedding_folder, model_dir, log_dir))
+
     elif model_name == "TextRNN":
         from TextRNN import args, TextRNN
-        main(args.get_args(data_dir, cache_dir,
-                           embedding_folder, model_dir, log_dir))
+
     elif model_name == "LSTMATT":
         from LSTM_ATT import args, LSTMATT
-        main(args.get_args(data_dir, cache_dir,
-                           embedding_folder, model_dir, log_dir))
+
     elif model_name == "TextRCNN":
         from TextRCNN import args, TextRCNN
-        main(args.get_args(data_dir, cache_dir,
-                           embedding_folder, model_dir, log_dir))
 
+    elif model_name == "TransformerText":
+        from TransformerText import args, TransformerText
+        
+    main(args.get_args(data_dir, cache_dir,
+                        embedding_folder, model_dir, log_dir))
 
     
     
